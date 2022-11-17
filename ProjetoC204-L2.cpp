@@ -19,28 +19,6 @@ struct passageiro
 	int end; // destino da corrido
 };
 
-/*
--------------------------PARA FINS CIENTÍFICOS:---------------------
-Coloque quantas horas foram gastas tentando fazer o código funcionar
-na parede do programador.
-
--------------------------HORAS GASTAS: 8h---------------------------
-
-Problemas atuais:
-
-A prioridade deve ser de quem pediu primeiro ou a pessoa mais próxima do uber?
-
-Devemos sair do nosso caminho para pegar uma pessoa que está próxima?
-- Se sim devemos continuar o caminho ou ir para um outro caminho mais curto?
-- Qual pessoa receberia prioridade a que vai ser mais rápida ou a que chegou primeiro?
-
---------------------------------------------------------------------
-*/
-
-
-
-
-
 void cria_aresta(list<no>adj[], int nVertices, int u, int v, int p, int orientado)
 {
 	no aux; //essa variavel vai pegar as variaveis (v ; peso) dentro do struct e vai virar em um nó

@@ -154,35 +154,20 @@ void dijkstra(list<no>adj[], int nVertices, int start, int end, int &valor, int 
 	cout << endl;
 }
 
-int cam_custo(list<no>adj[], int nVertices, int start, int end)
+int cam_custo(list<no>adj[], int nVertices, int start, int end) //Retorna o custo da da rota
 {
 	int valor;
 	dijkstra(adj, nVertices, start, end, valor, 0);
 
 	return valor;
 }
-int prox_cidade(list<no>adj[], int nVertices, int start, int end)
+int prox_cidade(list<no>adj[], int nVertices, int start, int end) //Retorna qual a proxima cidade da rota
 {
 	int valor;
 	dijkstra(adj, nVertices, start, end, valor, 1);
 	return valor;
 }
 
-int chegou(passageiro p[10], int cidade, int contpass)
-{
-	for(int i = 1; i <= contpass; i++)
-	{
-		if(p[i].end == cidade)
-		{
-			return i;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	return 0;
-}
 
 int main()
 {
@@ -199,7 +184,7 @@ int main()
 	int secundario;
 	int totalpass; //entrada para a quantidade total de passageiros no carro
 	int peso; //peso do vertice
-	int fim = 0;
+	int fim;
 	list<no>adj[10]; //lista de adjacencia
 	list <no> :: iterator q;
 	passageiro p[10];
@@ -214,6 +199,7 @@ int main()
 
 	//entrada das especificações do grafo
 	cin >> numerov; //entrada do numero de vertices do grafo
+	numerov = numerov + 1;
 
 	cout << endl;
 
@@ -233,22 +219,24 @@ int main()
 
 	cout << endl;
 
-	cout << "Crianção do mapa feita....." << endl << endl;
+	cout << "//==========Crianção do mapa feita.....==============//" << endl << endl;
 
-	cout << "Indique sua cidade atual: " << endl;
+	cout << "Indique a cidade atual do veiculo: " << endl;
 	cin >> cidade;
 
-	cout << "Inicializando as informações dos passageiros...." << endl;
+	cout << "//==========Inicializando as informações dos passageiros....==============//" << endl;
 
 	cout << endl;
 
-	cout << "Quantidade máxima de lugares: ";
+	cout << "Quantidade máxima de lugares do veiculo: ";
 
 	cin >> totalpass;
 
 	cout << "Quantidade de passageiros: ";
 
 	cin >> contpass;
+	fim = contpass; // Varivel aux para controle de passageiros no carro
+
 
 
 	for(int i = 1; i <= contpass; i++)
@@ -260,36 +248,32 @@ int main()
 		cin >> p[i].end; //vertice de destino final da árvore
 
 	}
-	for(int i = 1; i <= contpass; i++) // Pegando passageiro mais proximo
+	cout << "//============Calculando rota...==============//" << endl;
+
+	for(int i = 1; i <= contpass; i++) //Calculando o passageiro mais proximo do veiculo
 	{
-		cout << cam_custo(adj, numerov, cidade, p[i].start);
-		if(cam_custo(adj, numerov, cidade, p[i].start) < cam_custo(adj, numerov, cidade, p[prioridade].start))
+		if(cam_custo(adj, numerov, cidade, p[i].start) < cam_custo(adj, numerov, cidade, p[prioridade].start)) 
 		{
-			prioridade = i;
+			prioridade = i; //definindo-o como prioridade
 		}
 	}
 	cout << "Menor caminho, passageiro: " << prioridade << " na cidade: " << p[prioridade].start << endl;
-	cidade = p[prioridade].start;
+	cidade = p[prioridade].start; //cidade do carro agora é a cidade do passageiro prioridade
 	cout << "Indo para a cidade: " << cidade << " - Passageiro: " << prioridade << " embarcado." << endl;
+	p[prioridade].start = NULL; // Definindo ponto de partida do passageiro como null para nao atraplhar em futuras comparações
 
-	p[prioridade].start = NULL;
-	p[prioridade].start = p[prioridade].end; // retirando o start para nao atrapalhar nas proximas comaprações*/
-
-
-	cout << cam_custo(adj, numerov, cidade, p[prioridade].start) << endl;
-	do
+	do // iniciando rota
 	{
-		for(int i = 1; i <= contpass; i++)
+		for(int i = 1; i <= contpass; i++) // inicio do looping de decisoes
 		{
-			cout << cam_custo(adj, numerov, cidade, 3) << " < "<< cam_custo(adj, numerov, cidade, p[i].start)<<endl;
-			if(cam_custo(adj, numerov, cidade, p[prioridade].end) < cam_custo(adj, numerov, cidade, p[i].start)) //Se o custo da proxima cidade da rota for menor que o custo da cidade do proximo passageiro
+			if(cam_custo(adj, numerov, cidade, p[prioridade].end) < cam_custo(adj, numerov, cidade, p[i].start)) //Decidindo se continua a rota ou busca um passageiro
 			{
-				cout << "Indo para a cidade: " << prox_cidade(adj, numerov, cidade, p[prioridade].end) << endl;
+				cout << "Indo para a cidade: " << prox_cidade(adj, numerov, cidade, p[prioridade].end) << endl; //continua a rota
 				cidade = prox_cidade(adj, numerov, cidade, p[prioridade].end);
 			}
 			else
 			{
-				cout << "Menor caminho, passageiro: " << i << " na cidade: " << p[i].start << endl;
+				cout << "Menor caminho, passageiro: " << i << " na cidade: " << p[i].start << endl; // busca passageiro
 				cidade = p[i].start;
 				cout << "Indo para a cidade: " << cidade << " - Passageiro: " << i << " embarcado." << endl;
 				p[i].start = NULL;
@@ -297,20 +281,23 @@ int main()
 
 
 			}
-			if(cidade == p[i].end)
+			if(cidade == p[i].end) // se a cidade do carro for o destino de algum passageiro
 			{
 				cout << "Passageiro: " << prioridade << " desembarcado" << endl;
-				
-				prioridade = secundario;
-				fim += 1;
+				prioridade = secundario; // a prioridade agora passa para o proximo passageiro
+				fim = fim - 1;
+				cout << "Faltam: " << fim << " Passageiro(s)." << endl;
 			}
-
+			if(fim == 0)
+			{
+				break;
+			}
 
 		}
 
 
 	}
-	while(fim != contpass);
+	while(fim != 0);
 
 	return 0; //retorna 0
 }
